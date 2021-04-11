@@ -9,20 +9,31 @@ screen.bgpic("blank_states_img.gif")
 
 us_data = pandas.read_csv("50_states.csv")
 all_state = us_data.state.to_list()
-while True:
+guessed_state = []
+while len(guessed_state) < 50:
     user_guess = screen.textinput(f"{score}/50", "Please Input the State Name")
+    if user_guess == "Exit":
+        missing_state = [state for state in all_state if state not in guessed_state]
+        missing_data = pandas.DataFrame(missing_state)
+        missing_data.to_csv("states_to_learn.csv")
+
+
+        break
     if user_guess in all_state:
+        guessed_state.append(user_guess)
         score +=1
         t = Turtle()
         t.hideturtle()
         t.penup()
         state_data = us_data[us_data.state == user_guess]
 
-        print(f"state location : ({state_data.x},{state_data.y})")
+        # print(f"state location : ({state_data.x},{state_data.y})")
         t.goto(int(state_data.x), int(state_data.y))
 
         t.write(f"{user_guess}", align="center", font= ("Arial", 10, "normal"))
-
+csv_data = pandas.DataFrame(guessed_state)
+csv_data.to_csv("user_guessed.csv")
+#save the current data to csv file
 
 screen.exitonclick()
 #
